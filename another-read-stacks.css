@@ -1,0 +1,34 @@
+.another-read-stack-post{
+    width: 75%;
+    margin: 0 auto;
+
+}
+
+.stack-title{
+    width: fit-content;
+    margin: 25px auto;
+}
+
+
+.stack-content{
+    width: fit-content;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    margin: 0 auto;
+}
+
+
+.stack{
+    width: 400px;
+    margin: 25px 40px;
+}
+
+.book-image{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.book-image a img{
+    width: auto;
+    height: 260px;
+}

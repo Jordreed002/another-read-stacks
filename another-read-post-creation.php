@@ -1,137 +1,106 @@
 <?php 
 
-class AnotherReadPostCreator{
-
-
-    static function APIcall(){
-
-        $options = get_option('another_read_settings');
-
-
-        $url = "https://anotherread.com/site/read/templates/api/activities/json/v2/get-activity-list/default.aspx";
-    
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $headers = array(
-            "Accept: application/json"
-        );
-    
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    
-        $data = array(
-        
-            "accesskey" => $options['accesskey'],
-            "quantityofrecords" => $options['results'],
-        );
-
-        if($options['publisher'] !== ''){
-            $data['publisher'] = $options['publisher'];
-        }
-        if($options['contributor'] !== ''){
-            $data['contributors'] = $options['contributor'];
-        }
-        if($options['keyword'] !== ''){
-            $data['keywords'] = $options['keyword'];
-        }
-
-    
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-    
-        $resp = curl_exec($curl);
-        curl_close($curl);
-    
-        $activityRepsonse = json_decode($resp, true);
-
-        if($activityRepsonse["ApiCallWasSuccessful"] == true)
-        {
-            $timestamp = new DateTime();
-            if(get_option('another_read_settings_timestamp') !== false){
-                update_option('another_read_settings_timestamp', $timestamp);
-            }
-            else{
-                add_option('another_read_settings_timestamp', $timestamp);
-            }
-            //print_r("there was no error");
-            $options['apiCallSuccessful'] = true;
-            update_option('another_read_settings', $options);
-            return $activityRepsonse;
-        }
-        else{
-            
-            //print_r("there was an error");
-            $options['apiCallSuccessful'] = false;
-            update_option('another_read_settings', $options);
-            return $activityRepsonse;
-        }
-    
-    }
+class AnotherReadStacksPostCreator{
 
     static function create(){
 
-        $options = get_option('another_read_settings');
-        $numberOfResults = $options['results'];
+        $options = get_option('another_read_stacks_settings');
+        $data = array(
+            'accesskey' => $options['apiKey'],
+            'usertoken' => $options['usertoken'],
+            'pagenumber' => 1,
+            'pagesize' => 10,
+            'includebooks' => 'true',
+            'includeratings' => 'true',
+        );
 
-        $activityPayload = AnotherReadPostCreator::APIcall();
-        $i = $numberOfResults - 1;
+        $stackPayload = AnotherReadApi::APIcall("get_stacks", $data);
 
-        if($activityPayload['ApiCallWasSuccessful'] == true){
 
-            $activityPayload = $activityPayload['Payload'];
+        if($stackPayload['ApiCallWasSuccessful'] == true){
+
+            $stackResults = $stackPayload['Payload']['Result']['Results'];
             
-            while($i >= 0 ){
-                if( get_post($activityPayload['Result'][$i]['ActivityID']) == false){
+            foreach($stackResults as $stack ){
+                if( get_post($stack['StackID']) == false){
 
-                    $activities = $activityPayload['Result'][$i];
-                    $contributorID = $activities['ContributorList'][0];
+                    $stackResult = $stackPayload['Payload'];
 
-                    $title = $activities['ActivityText'];
-                    $activityID = $activities['ActivityID'];
-                    $jacketImage = $activities['ActivityJacketImage'];
-
-                    $activityDate = $activities['ActivityDate'];
-                    $timestamp = strtotime($activityDate);
-                    $activityDate = date('jS F Y', $timestamp);
-
-                    $bookISBN = $activities['Isbn'];
-
-
-                    $bookLookup = $activityPayload['BookLookup'][$bookISBN];
-                    $keynote = $bookLookup['Keynote'];
-                    $bookName = $bookLookup['Title'];
-                    $bookLink = $bookLookup['BookLink'];
-
-                    $contributorLookup = $activityPayload['ContributorLookup'][$contributorID];
-                    $authorName = $contributorLookup['DisplayName'];
-                    $authorLink = $contributorLookup['ContributorLink'];
-
-                    //$keywords = $bookLookup['Keywords'];
+                    $title = $stack['Title'];
+                    $stackID = $stack['StackID'];
+                    $bookList = $stack['BookList'];
 
                     $metaInput = array(
-                        '_activity_id' => $activityID,
-                        '_jacket_image' => $jacketImage,
-                        '_keynote' => $keynote,
-                        '_activity_date' => $activityDate,
-                        '_book_isbn' => $bookISBN,
-                        '_book_name' => $bookName,
-                        '_book_link' => $bookLink,
-                        '_author_name' => $authorName,
-                        '_author_link' => $authorLink
+                        '_stack_content' => array(
+                            'title' => $title,
+                            'stack_id' => $stackID,
+                            'book_list' => array()
+                        ),
                     );
 
-                    $activityPost = array(
+                    $i = 0;
+                    foreach($bookList as $book){
+
+                        $bookLookup = $stackResult['BookLookup'][$book];
+                        $jacketImage = $bookLookup['JacketUrl'];
+                        $keynote = $bookLookup['Keynote'];
+                        $bookName = $bookLookup['Title'];
+                        $bookLink = $bookLookup['BookLink'];
+                        $contributors = $bookLookup['Contributors'];
+                        $contributor = array();
+
+                        $j = 0;
+                        foreach($contributors as $contributorID){
+                            $contributorLookup = $stackResult['ContributorLookup'][$contributorID];
+                            $authorName = $contributorLookup['DisplayName'];
+                            $authorLink = $contributorLookup['ContributorLink'];
+
+                            $contributor[$j] = array(
+                                'author_name' => $authorName,
+                                'author_link' => $authorLink
+                            );
+                            
+                            $j++;
+
+                        }
+
+                        $book = array(
+                            'jacket_image' => $jacketImage,
+                            'book_isbn' => $book,
+                            'book_name' => $bookName,
+                            'book_link' => $bookLink,
+                            'keynote' => $keynote,
+                            'contributors' => $contributor,
+                        );
+
+
+
+                        $metaInput['_stack_content']['book_list'][$i] = $book;
+                        $i++;
+                    }
+
+                    $stackPost = array(
                         'post_title'    => wp_strip_all_tags( $title ),
                         'post_status'   => 'publish',
-                        'post_type'     => 'activity',
+                        'post_type'     => 'stacks',
                         'meta_input'    => $metaInput,
-                        'import_id'     => $activityID
-                        //'tax_input'     => array( 'keywords' => $keywords )
+                        'import_id'     => $stackID
                     );
                     
-                    wp_insert_post($activityPost);
+                    wp_insert_post($stackPost);
                     //print_r('post created');
+
+
+                    $timestamp = new DateTime();
+                    if(isset($settings['timestamp'])){
+                        $settings['timestamp'] = $timestamp;
+                        update_option('another_read_stacks_settings', $settings);
+                    }
+                    else{
+                        $settings['timestamp'] = $timestamp;
+                        update_option('another_read_stacks_settings', $settings);
+                    }
                 }
-                $i--;
             }
         }
 

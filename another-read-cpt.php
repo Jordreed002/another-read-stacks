@@ -1,24 +1,24 @@
 <?php 
 
-class AnotherReadCPT{
+class AnotherReadStacksCPT{
 
-    static function activityCPT(){
+    static function stacksCPT(){
 
         //custom post type
-        register_post_type('activity',
+        register_post_type('stacks',
         array(
             'labels' => array(
-                'name' => 'Activities',
-                'singular_name' => 'Activity',
-                'add_new' => 'Add activity',
-                'all_items' => 'All activities',
-                'add_new_item' => 'Add activity',
-                'edit_item' => 'Edit activity',
-                'new_item' => 'New activity',
-                'view_item' => 'View activity',
-                'search_item' => 'Search activities',
-                'not_foud' => 'No activities found',
-                'not_found_in_trash' => 'No activities found in trash'
+                'name' => 'Stacks',
+                'singular_name' => 'Stack',
+                'add_new' => 'Add Stack',
+                'all_items' => 'All Stacks',
+                'add_new_item' => 'Add Stack',
+                'edit_item' => 'Edit Stack',
+                'new_item' => 'New Stack',
+                'view_item' => 'View Stack',
+                'search_item' => 'Search Stacks',
+                'not_foud' => 'No Stacks found',
+                'not_found_in_trash' => 'No Stacks found in trash'
             ),
             'public' => true,
             'hierarchical' => false,
@@ -29,162 +29,127 @@ class AnotherReadCPT{
         );
 
         //removes editor from posts
-        remove_post_type_support('activity', 'editor');
-        remove_post_type_support('activity', 'author');
-    }
-
-    static function activityTaxonomy(){
-
-        //custom taxonomy for the custom post type
-        register_taxonomy('keywords', array('activity'), array(
-            'labels' => array(
-                'name' => 'Keywords',
-                'singular_name' => 'Keyword',
-                'search_items' => 'Search keywords',
-                'all_items' => 'All keywords',
-                'edit_item' => 'Edit keyword',
-                'update_item' => 'Update keyword',
-                'add_new_item' => 'Add new keyword',
-                'new_item_name' => 'New keyword name',
-                'menu_name' => 'Keyword'
-            ),
-            'hierarchical' => false,
-            'show_ui' => true,
-            'show_admin_column' => true,
-            'rewrite' => array('slug' => 'keywords')
-        ));
+        remove_post_type_support('stacks', 'editor');
+        remove_post_type_support('stacks', 'author');
     }
 
     static function createMetaBoxes(){
 
-        //Activity meta box
+        //stack meta box
         add_meta_box(
-            'activity_data_id',
-            'Activity content',
-            array(self::class, 'activity_data_html'),
-            'activity'
+            'stack_data_id',
+            'Stack content',
+            array(self::class, 'stack_data_html'),
+            'stacks'
         );
     }
-
-
-
-
         
-    static function activity_data_html($post){
-
-        //array to loop through the metaboxes
-        $arraykeys = array('_activity_id','_jacket_image', '_keynote', '_activity_date', '_book_isbn', '_book_name', '_book_link', '_author_name', '_author_link'); 
-
-        $value = array();
-        $i = 0;
+    static function stack_data_html($post){
 
         //Obtains the values for the metaboxes
-        foreach($arraykeys as $arraykey){
-            $value[$i++] = get_post_meta($post->ID, $arraykey, true);
-        }
+        $postMeta = get_post_meta($post->ID, '_stack_content', true);
 
-        //html for the meta boxes
-        ?>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="activity-id">Activity ID</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="activity-id" value="<?php echo $value[0] ?>" id="activity-id">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="jacket-image">Link to jacket image</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="jacket-image" value="<?php echo $value[1] ?>" id="jacketImage">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="keynote">Keynote</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="keynote" value="<?php echo $value[2] ?>" id="keynote">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="activity-date">Activity date</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="activity-date" value="<?php echo $value[3] ?>" id="activity-date">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="book-isbn">Book ISBN</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="book-isbn" value="<?php echo $value[4] ?>" id="book-isbn">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="book-name">Book name</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="book-name" value="<?php echo $value[5] ?>" id="book-name">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="book-link">Link to book</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="book-link" value="<?php echo $value[6] ?>" id="book-link">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="author-name">Author name</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="author-name" value="<?php echo $value[7] ?>" id="author-name">
-                </div>
-            </div>
-            <div class="meta-container">
-                <div class="meta-label">
-                    <label for="author-link">Link to author</label>
-                </div>
-                <div class="meta-input">
-                    <input type="text" name="author-link" value="<?php echo $value[8] ?>" id="author-link">
-                </div>
-            </div>
 
+            //html for the meta boxes
+            ?>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="stack-id">Stack ID</label>
+                    </div>
+                    <div class="meta-input">
+                        <input type="text" name="stack-id" value="<?php echo $post->ID ?>" id="stack-id">
+                    </div>
+                </div>
         <?php
+        $i = 1;
+        //Loops through the array and sets the values for the metaboxes
+        foreach($postMeta['book_list'] as $metaData){
+
+        ?>
+                <div class="header"> <h1>Book <?php echo $i ?></h1></div>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="book-name">Book name</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="book-name" value="<?php echo $metaData['book_name'] ?>" id="book-name">
+                    </div>
+                </div>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="jacket-image">Link to jacket image</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="jacket-image" value="<?php echo $metaData['jacket_image'] ?>" id="jacketImage">
+                    </div>
+                </div>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="keynote">Keynote</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="keynote" value="<?php echo $metaData['keynote'] ?>" id="keynote">
+                    </div>
+                </div>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="book-isbn">Book ISBN</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="book-isbn" value="<?php echo $metaData['book_isbn'] ?>" id="book-isbn">
+                    </div>
+                </div>
+
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="book-link">Link to book</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="book-link" value="<?php echo $metaData['book_link'] ?>" id="book-link">
+                    </div>
+                </div>
+                <?php foreach($metaData['contributors'] as $contributor) { ?>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="author-name">Author name</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="author-name" value="<?php echo $contributor['author_name'] ?>" id="author-name">
+                    </div>
+                </div>
+                <div class="meta-container">
+                    <div class="meta-label">
+                        <label for="author-link">Link to author</label>
+                    </div>
+                    <div class="meta-input">
+                        <input class="regular-text" type="text" name="author-link" value="<?php echo $contributor['author_link'] ?>" id="author-link">
+                    </div>
+                </div>
+        <?php
+                }
+            $i++;
+        }
     }
 
     static function saveMetaBoxes(int $post_id){
 
-        //saves the data entered into the meta boxes when the post is saved
-        $arraykeys = array('_activity_id','_jacket_image', '_keynote', '_activity_date', '_book_isbn', '_book_name', '_book_link', '_author_name', '_author_link'); 
+        $stackContent = array();
 
-        $keys = array('activity_id', 'jacket-image', 'keynote', 'activity-date', 'book-isbn', 'book-name', 'book-link', 'author-name', 'author-link'); 
-
-        $i = 0;
-        foreach($arraykeys as $arraykey){
-            if( array_key_exists($keys[$i], $_POST)){                
-                update_post_meta(
-                    $post_id,
-                    $arraykey,
-                    $_POST[$keys[$i++]]
-                );
-            }
+        if( array_key_exists('stack_content', $_POST)){                
+            update_post_meta(
+                $post_id,
+                '_stack_content',
+                $_POST[$stackContent]
+            );
         }
+        
     }
 
     static function setTemplate($single_template){
         global $post;
 
-        if($post->post_type == 'activity'){
-            $single_template = dirname(__FILE__) . '/activity-post.php';
+        if($post->post_type == 'stacks'){
+            $single_template = dirname(__FILE__) . '/stack-post.php';
 
             return $single_template;
         }
