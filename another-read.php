@@ -1,10 +1,10 @@
 <?php
     /**
         * Plugin Name: Another Read Stacks
-        * Description: Add posts of your stacks to your wordpress website from your Another Read account.
+        * Description: Include your Stacks from your Another Read account and automatically generate a post for each Stack using this plugin.
         * Version: 1.0
-        * Author: Line Industries
-        * Author URI: https://line.industries/
+        * Author: Another Read
+        * Author URI: https://anotherread.com/
     */
 
     defined('ABSPATH') or die('You can/t access this');
@@ -12,7 +12,6 @@
     include_once("another-read-cpt.php");
     include_once("another-read-post-creation.php");
     include_once("another-read-api.php");
-    //include_once("another-read-block.php");
 
 
     class AnotherRead{
@@ -38,13 +37,10 @@
             add_action('add_meta_boxes', array('AnotherReadStacksCPT', 'createMetaBoxes'));
             
             //Adds saving to meta boxes
-            add_action('save_post', array('AnotherReadStacksCPT','saveMetaBoxes'));
+            add_action('save_post_stacks', array('AnotherReadStacksCPT','saveStacksMetaBoxes'));
             
             //Adds the admin page
             add_action('admin_menu', array($this, 'adminMenu'));
-
-            //Cron event
-            // add_action('getActivityPosts', array('AnotherReadStacksPostCreator', 'create'));
 
             //Set template for CPT
             add_filter('single_template', array('AnotherReadStacksCPT', 'setTemplate'));
@@ -148,7 +144,8 @@
                 'usertoken' => '',
                 'apiKey' => '',
                 'apiCallSuccessful' => null,
-                'keynote' => '0'
+                'keynote' => '0',
+                'timestamp' => '0'
             );
 
             if(get_option('another_read_stacks_settings') !== false) {

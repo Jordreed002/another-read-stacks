@@ -72,7 +72,7 @@ class AnotherReadStacksCPT{
                         <label for="book-name">Book name</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="book-name" value="<?php echo $metaData['book_name'] ?>" id="book-name">
+                        <input class="regular-text" type="text" name="book_name" value="<?php echo $metaData['book_name'] ?>" id="book_name">
                     </div>
                 </div>
                 <div class="meta-container">
@@ -80,7 +80,7 @@ class AnotherReadStacksCPT{
                         <label for="jacket-image">Link to jacket image</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="jacket-image" value="<?php echo $metaData['jacket_image'] ?>" id="jacketImage">
+                        <input class="regular-text" type="text" name="jacket_image" value="<?php echo $metaData['jacket_image'] ?>" id="jacket_image">
                     </div>
                 </div>
                 <div class="meta-container">
@@ -96,7 +96,7 @@ class AnotherReadStacksCPT{
                         <label for="book-isbn">Book ISBN</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="book-isbn" value="<?php echo $metaData['book_isbn'] ?>" id="book-isbn">
+                        <input class="regular-text" type="text" name="book_isbn" value="<?php echo $metaData['book_isbn'] ?>" id="book_isbn">
                     </div>
                 </div>
 
@@ -105,7 +105,7 @@ class AnotherReadStacksCPT{
                         <label for="book-link">Link to book</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="book-link" value="<?php echo $metaData['book_link'] ?>" id="book-link">
+                        <input class="regular-text" type="text" name="book_link" value="<?php echo $metaData['book_link'] ?>" id="book_link">
                     </div>
                 </div>
                 <?php foreach($metaData['contributors'] as $contributor) { ?>
@@ -114,7 +114,7 @@ class AnotherReadStacksCPT{
                         <label for="author-name">Author name</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="author-name" value="<?php echo $contributor['author_name'] ?>" id="author-name">
+                        <input class="regular-text" type="text" name="author_name" value="<?php echo $contributor['author_name'] ?>" id="author_name">
                     </div>
                 </div>
                 <div class="meta-container">
@@ -122,7 +122,7 @@ class AnotherReadStacksCPT{
                         <label for="author-link">Link to author</label>
                     </div>
                     <div class="meta-input">
-                        <input class="regular-text" type="text" name="author-link" value="<?php echo $contributor['author_link'] ?>" id="author-link">
+                        <input class="regular-text" type="text" name="author_link" value="<?php echo $contributor['author_link'] ?>" id="author_link">
                     </div>
                 </div>
         <?php
@@ -131,15 +131,16 @@ class AnotherReadStacksCPT{
         }
     }
 
-    static function saveMetaBoxes(int $post_id){
-
+    static function saveStacksMetaBoxes($post_id){
+        var_dump($post_id);
         $stackContent = array();
 
-        if( array_key_exists('stack_content', $_POST)){                
+        if( array_key_exists('stack_id', $_POST) && $_POST['stack_id'] == $post_id){
+            
             update_post_meta(
                 $post_id,
                 '_stack_content',
-                $_POST[$stackContent]
+                $stackContent
             );
         }
         

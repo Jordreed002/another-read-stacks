@@ -91,19 +91,20 @@ class AnotherReadStacksPostCreator{
                     //print_r('post created');
 
 
-                    $timestamp = new DateTime();
-                    if(isset($settings['timestamp'])){
-                        $settings['timestamp'] = $timestamp;
-                        update_option('another_read_stacks_settings', $settings);
-                    }
-                    else{
-                        $settings['timestamp'] = $timestamp;
-                        update_option('another_read_stacks_settings', $settings);
-                    }
+
                 }
+
             }
         }
-
+            $timestamp = new DateTime();
+            if(isset($settings['timestamp'])){
+                $options['timestamp'] = $timestamp;
+                update_option('another_read_stacks_settings', $options);
+            }
+            else{
+                $options['timestamp'] = $timestamp;
+                update_option('another_read_stacks_settings', $options);
+            }
         
 
     }

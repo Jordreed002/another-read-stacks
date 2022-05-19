@@ -67,7 +67,9 @@
                                             <label for="accesskey">Another Read API key</label>
                                         </th>
                                         <td>
-                                            <input class="regular-text" type="text" id="apiKey" name="apiKey" value="<?php if(isset($options['apiKey'])){echo $options['apiKey'];} ?>">
+                                            <input class="regular-text" type="text" id="apiKey" name="apiKey" value="<?php if(isset($options['apiKey'])){echo $options['apiKey'];} ?>" require>
+                                            <p>Get your API key at <a href="anotherread.com">anotherread.com</a>.</p>
+
                                         </td>
                                     </tr>
                                     <tr>
@@ -123,30 +125,6 @@
                 </div>
 
             <?php
-
-                // $url = "https://anotherread.com/api/user/json/v1/get-api-key/default.aspx";
-                    
-                // $curl = curl_init();
-                // curl_setopt($curl, CURLOPT_URL, $url);
-                // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                // $headers = array(
-                //     "Accept: application/json"
-                // );
-
-                // curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-                // $data = array(
-
-                //     "username" => "jordan@lineindustries.com",
-                //     "password" => '154956',
-                // );
-
-                // curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-
-                // $resp = curl_exec($curl);
-                // curl_close($curl);
-
-                // $activityRepsonse = json_decode($resp, true);
 
         }
 
