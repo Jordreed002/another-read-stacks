@@ -14,7 +14,7 @@
     include_once("another-read-api.php");
 
 
-    class AnotherRead{
+    class AnotherReadStacks{
 
         function __construct()
         {
@@ -37,7 +37,7 @@
             add_action('add_meta_boxes', array('AnotherReadStacksCPT', 'createMetaBoxes'));
             
             //Adds saving to meta boxes
-            add_action('save_post_stacks', array('AnotherReadStacksCPT','saveStacksMetaBoxes'));
+            add_action('save_post', array('AnotherReadStacksCPT','saveStacksMetaBoxes'));
             
             //Adds the admin page
             add_action('admin_menu', array($this, 'adminMenu'));
@@ -162,8 +162,8 @@
         }
     }
 
-    if( class_exists('AnotherRead')){
-        $AnotherRead = new AnotherRead();
+    if( class_exists('AnotherReadStacks')){
+        $AnotherReadStacks = new AnotherReadStacks();
     }
     // if(! wp_next_scheduled('getActivityPosts')){
     //     wp_schedule_event(time(), 'daily', 'getActivityPosts');
@@ -171,10 +171,10 @@
 
 
     //Activate hook
-    register_activation_hook(__FILE__, array($AnotherRead, 'activate'));
+    register_activation_hook(__FILE__, array($AnotherReadStacks, 'activate'));
 
     //Deactivate hook
-    register_deactivation_hook(__FILE__, array($AnotherRead, 'deactivate'));
+    register_deactivation_hook(__FILE__, array($AnotherReadStacks, 'deactivate'));
 
 
 

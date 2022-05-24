@@ -20,15 +20,24 @@ class AnotherReadStacksPostCreator{
         if($stackPayload['ApiCallWasSuccessful'] == true){
 
             $stackResults = $stackPayload['Payload']['Result']['Results'];
+
+            function arrayKeyCheck($key){
+                if(isset($key)){
+                   return $key;
+                }
+                else{
+                    return '';
+                }
+            }
             
             foreach($stackResults as $stack ){
                 if( get_post($stack['StackID']) == false){
 
                     $stackResult = $stackPayload['Payload'];
 
-                    $title = $stack['Title'];
-                    $stackID = $stack['StackID'];
-                    $bookList = $stack['BookList'];
+                    $title = arrayKeyCheck($stack['Title']);
+                    $stackID = arrayKeyCheck($stack['StackID']);
+                    $bookList = arrayKeyCheck($stack['BookList']);
 
                     $metaInput = array(
                         '_stack_content' => array(
@@ -41,19 +50,19 @@ class AnotherReadStacksPostCreator{
                     $i = 0;
                     foreach($bookList as $book){
 
-                        $bookLookup = $stackResult['BookLookup'][$book];
-                        $jacketImage = $bookLookup['JacketUrl'];
-                        $keynote = $bookLookup['Keynote'];
-                        $bookName = $bookLookup['Title'];
-                        $bookLink = $bookLookup['BookLink'];
-                        $contributors = $bookLookup['Contributors'];
+                        $bookLookup = arrayKeyCheck($stackResult['BookLookup'][$book]);
+                        $jacketImage = arrayKeyCheck($bookLookup['JacketUrl']);
+                        $keynote = arrayKeyCheck($bookLookup['Keynote']);
+                        $bookName = arrayKeyCheck($bookLookup['Title']);
+                        $bookLink = arrayKeyCheck($bookLookup['BookLink']);
+                        $contributors = arrayKeyCheck($bookLookup['Contributors']);
                         $contributor = array();
 
                         $j = 0;
                         foreach($contributors as $contributorID){
-                            $contributorLookup = $stackResult['ContributorLookup'][$contributorID];
-                            $authorName = $contributorLookup['DisplayName'];
-                            $authorLink = $contributorLookup['ContributorLink'];
+                            $contributorLookup = arrayKeyCheck($stackResult['ContributorLookup'][$contributorID]);
+                            $authorName = arrayKeyCheck($contributorLookup['DisplayName']);
+                            $authorLink = arrayKeyCheck($contributorLookup['ContributorLink']);
 
                             $contributor[$j] = array(
                                 'author_name' => $authorName,
@@ -89,6 +98,8 @@ class AnotherReadStacksPostCreator{
                     
                     wp_insert_post($stackPost);
                     //print_r('post created');
+
+
 
 
 
