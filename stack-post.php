@@ -31,14 +31,14 @@ get_header(); ?>
                     <div class="book-info">
                         <div class="book-title">
                             <a href="<?php echo $stack['book_link']; ?>">
-                                <p><?php echo $stack['book_name']; ?></p>
+                                <h3><?php echo $stack['book_name']; ?></h3>
                             </a>
                         </div>
 
                         <?php foreach($stack['contributors'] as $contributor){ ?>
                         <div class="book-author">
                             <a href="<?php echo $contributor['author_link']; ?>">
-                                <h3 class="author-name"><?php echo $contributor['author_name']; ?></h3>
+                                <h4 class="author-name"><?php echo $contributor['author_name']; ?></h4>
                             </a>
                         </div>
 
