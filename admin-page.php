@@ -68,7 +68,7 @@
                                         </th>
                                         <td>
                                             <input class="regular-text" type="text" id="apiKey" name="apiKey" value="<?php if(isset($options['apiKey'])){echo $options['apiKey'];} ?>" require>
-                                            <p>Get your API key at <a href="anotherread.com">anotherread.com</a>.</p>
+                                            <p>Get your API key at <a href="https://anotherread.com">anotherread.com</a>.</p>
 
                                         </td>
                                     </tr>
